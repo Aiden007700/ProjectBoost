@@ -8,6 +8,11 @@ public class Movment : MonoBehaviour
     AudioSource audio;
     public float thrustForce;
     public float rotationForce;
+    public AudioClip mainEngine;
+    public ParticleSystem thrusterParticleSystem;
+    public ParticleSystem lBoosterParticleSystem;
+    public ParticleSystem rBoosterParticleSystem;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -32,24 +37,31 @@ public class Movment : MonoBehaviour
             rb.AddRelativeForce(Vector3.up * thrustForce * Time.deltaTime);
             if (!audio.isPlaying)
             {
-                audio.Play();
+                thrusterParticleSystem.Play();
+                audio.PlayOneShot(mainEngine);
             }
         } else if (Input.GetKeyUp(KeyCode.Space) || Input.GetKeyUp(KeyCode.W))
         {
             audio.Stop();
+            thrusterParticleSystem.Stop();
+            lBoosterParticleSystem.Stop();
+            rBoosterParticleSystem.Stop();
         }
+        
     }
 
     void ProcessRotation() 
     {
         if (Input.GetKey(KeyCode.A))
         {
+            rBoosterParticleSystem.Play();
             ApplyRotation(rotationForce);
         }
         else if (Input.GetKey(KeyCode.D))
         {
+            lBoosterParticleSystem.Play();
             ApplyRotation(-rotationForce);
-        }
+        } 
     }
 
     private void ApplyRotation(float rf)
